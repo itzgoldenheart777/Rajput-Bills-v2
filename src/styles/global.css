@@ -72,3 +72,45 @@ button {
   body { background: white; color: black; }
   .no-print { display: none !important; }
 }
+
+/* Responsive Grid for Forms */
+.responsive-layout {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 32px;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .responsive-layout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+.responsive-grid-col2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+@media (max-width: 600px) {
+  .responsive-grid-col2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.responsive-grid-col3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+@media (max-width: 768px) {
+  .responsive-grid-col3 {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 480px) {
+  .responsive-grid-col3 {
+    grid-template-columns: 1fr;
+  }
+}

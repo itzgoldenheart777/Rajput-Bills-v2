@@ -209,13 +209,20 @@ export default function BillPreview({ data }) {
           </div>
         </div>
 
-        {/* RIGHT: amount */}
-        <div style={{ padding: '12px 10px 0', textAlign: 'right' }}>
-          {d.amount && (
-            <div style={{ fontSize: 18, fontWeight: 700 }}>
-              {parseInt(d.amount).toLocaleString('en-IN')}
-            </div>
-          )}
+        {/* RIGHT: amount summary breakdown */}
+        <div style={{ padding: '12px 10px 0', textAlign: 'right', fontWeight: 600, fontSize: 14 }}>
+           {(d.trip_cost > 0 || d.amount) && (
+             <div style={{ marginBottom: 8 }}>{d.trip_cost ? parseInt(d.trip_cost).toLocaleString('en-IN') : parseInt(d.amount).toLocaleString('en-IN')} KM</div>
+           )}
+           {d.toll > 0 && (
+             <div style={{ marginBottom: 8 }}>{parseInt(d.toll).toLocaleString('en-IN')} Toll</div>
+           )}
+           {d.da > 0 && (
+             <div style={{ marginBottom: 8 }}>{parseInt(d.da).toLocaleString('en-IN')} DA</div>
+           )}
+           {d.outstation > 0 && (
+             <div style={{ marginBottom: 8 }}>{parseInt(d.outstation).toLocaleString('en-IN')} Outstation</div>
+           )}
         </div>
       </div>
 
@@ -231,9 +238,9 @@ export default function BillPreview({ data }) {
           <strong>PAN CARD NO : CBHPS4753G</strong>&nbsp;&nbsp;&nbsp; E. &amp; O. E.
         </span>
         <span style={{ fontSize: 13, fontWeight: 700 }}>
-          Total&nbsp;&nbsp;
-          <span style={{ ...underline, minWidth: 90, fontSize: 15, fontWeight: 700 }}>
-            {d.amount ? `${parseInt(d.amount).toLocaleString('en-IN')} /-` : ''}
+          Total = ₹&nbsp;&nbsp;
+          <span style={{ borderBottom: '1px solid #333', minWidth: 90, display: 'inline-block', fontSize: 15, fontWeight: 700, textAlign: 'center' }}>
+            {d.final_total ? `${parseInt(d.final_total).toLocaleString('en-IN')} /-` : (d.amount ? `${parseInt(d.amount).toLocaleString('en-IN')} /-` : '')}
           </span>
         </span>
       </div>

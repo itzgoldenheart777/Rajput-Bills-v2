@@ -32,6 +32,12 @@ CREATE TABLE IF NOT EXISTS bills (
   extra_hrs TEXT,
   extra_hrs_rate TEXT,
 
+  -- Auto Calculation Engine Storage
+  trip_cost NUMERIC,
+  toll NUMERIC,
+  da NUMERIC,
+  final_total NUMERIC,
+
   -- Outstation
   outstation TEXT,
   outstation_extra TEXT,
