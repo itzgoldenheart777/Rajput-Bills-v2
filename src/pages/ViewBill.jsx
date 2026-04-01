@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { getBillById } from '../lib/supabase'
 import BillPreview from '../components/BillPreview'
 import { useReactToPrint } from 'react-to-print'
+import html2canvas from 'html2canvas'
 
 export default function ViewBill() {
   const { id } = useParams()
@@ -75,7 +76,19 @@ export default function ViewBill() {
             onClick={handlePrint}
             style={{ background: 'var(--accent)', color: '#000', border: 'none', borderRadius: 10, padding: '12px 28px', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}
           >
-            🖨️ Print Bill
+            🖨️ Print PDF
+          </button>
+          <button
+            onClick={async () => {
+              const canvas = await html2canvas(printRef.current, { scale: 3, useCORS: true })
+              const link = document.createElement('a')
+              link.download = `Rajput_Bill_${bill.bill_no || 'Draft'}.jpg`
+              link.href = canvas.toDataURL('image/jpeg', 0.95)
+              link.click()
+            }}
+            style={{ background: 'transparent', color: 'var(--text)', border: '1px dashed var(--accent)', borderRadius: 10, padding: '12px 28px', fontSize: 14, cursor: 'pointer' }}
+          >
+            📸 Download JPG
           </button>
           <button
             onClick={() => navigate('/')}

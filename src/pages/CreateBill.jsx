@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { saveBill } from '../lib/supabase'
 import BillPreview from '../components/BillPreview'
 import { useReactToPrint } from 'react-to-print'
+import html2canvas from 'html2canvas'
 
 const CAR_TYPES = ['Sedan', 'SUV', 'Luxury', 'Mini', 'Tempo Traveller', 'Bus']
 
@@ -177,15 +178,11 @@ export default function CreateBill() {
         car_booked_by: form.car_booked_by,
         total_kms: form.total_km,
         
-        // Exact schema requests:
+        // Exact schema requests without breaking original Supabase layout:
         amount: calc.final_total, 
         toll_amount: calc.toll,
         driver_allowance: String(calc.driver_allowance), 
         outstation: String(calc.outstation),
-        trip_cost: calc.trip_cost,
-        toll: calc.toll, 
-        da: calc.driver_allowance,
-        final_total: calc.final_total,
       })
       setSaved(true)
       setTimeout(() => navigate(`/bill/${saved_bill.id}`), 1200)
@@ -332,7 +329,19 @@ export default function CreateBill() {
               onClick={handlePrint}
               style={{ flex: 1, background: 'transparent', color: 'var(--text)', border: '1px solid var(--border)', borderRadius: 10, padding: '12px 28px', fontSize: 14, fontWeight: 500, cursor: 'pointer', minWidth: '150px' }}
             >
-              🖨️ Print Bill
+              🖨️ Print PDF
+            </button>
+            <button
+              onClick={async () => {
+                const canvas = await html2canvas(printRef.current, { scale: 3, useCORS: true })
+                const link = document.createElement('a')
+                link.download = `Bill_${form.bill_no || 'Draft'}.jpg`
+                link.href = canvas.toDataURL('image/jpeg', 0.95)
+                link.click()
+              }}
+              style={{ flex: 1, background: 'transparent', color: 'var(--text)', border: '1px dashed var(--accent)', borderRadius: 10, padding: '12px 28px', fontSize: 14, fontWeight: 500, cursor: 'pointer', minWidth: '150px' }}
+            >
+              📸 Download JPG
             </button>
           </div>
         </div>
