@@ -46,10 +46,30 @@ export async function getBillById(id) {
 }
 
 export async function deleteBill(id) {
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from('bills')
     .delete()
     .eq('id', id)
+    .select()
 
+  if (error) throw error
+  if (!data || data.length === 0) throw new Error("Delete blocked by Supabase Security (RLS). You must add a DELETE policy in your SQL Editor.")
+}
+
+// Brand Assets CARS API
+export async function getCars() {
+  const { data, error } = await supabase.from('saved_cars').select('*').order('created_at', { ascending: true })
+  if (error) throw error
+  return data
+}
+
+export async function addCar(car_no, car_type) {
+  const { data, error } = await supabase.from('saved_cars').insert([{ car_no, car_type }]).select().single()
+  if (error) throw error
+  return data
+}
+
+export async function removeCar(id) {
+  const { error } = await supabase.from('saved_cars').delete().eq('id', id)
   if (error) throw error
 }

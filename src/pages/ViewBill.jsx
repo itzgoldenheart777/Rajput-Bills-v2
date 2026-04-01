@@ -84,7 +84,9 @@ export default function ViewBill() {
               const link = document.createElement('a')
               link.download = `Rajput_Bill_${bill.bill_no || 'Draft'}.png`
               link.href = canvas.toDataURL('image/png', 1.0)
+              document.body.appendChild(link)
               link.click()
+              document.body.removeChild(link)
             }}
             style={{ background: 'transparent', color: 'var(--text)', border: '1px dashed var(--accent)', borderRadius: 10, padding: '12px 28px', fontSize: 14, cursor: 'pointer' }}
           >

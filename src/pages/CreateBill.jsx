@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { saveBill } from '../lib/supabase'
+import { saveBill, getCars } from '../lib/supabase'
 import BillPreview from '../components/BillPreview'
 import { useReactToPrint } from 'react-to-print'
 import html2canvas from 'html2canvas'
@@ -54,9 +54,15 @@ export default function CreateBill() {
   const randNumStr = String(Math.floor(Math.random() * 1000)).padStart(3, '0')
   const defaultBillNo = `${String(today.getFullYear()).slice(-2)}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}${randNumStr}`
 
-  const [savedCars] = useState(() => {
-    try { return JSON.parse(localStorage.getItem('savedCars')) || [] } catch { return [] }
-  })
+  const [savedCars, setSavedCars] = useState([])
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 650)
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 650)
+    window.addEventListener('resize', handleResize)
+    getCars().then(data => setSavedCars(data || [])).catch(() => {})
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   const [form, setForm] = useState({
     party_name: '',
@@ -218,7 +224,7 @@ export default function CreateBill() {
       </div>
 
       <div className="responsive-layout">
-        <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16, padding: '24px 32px' }}>
+        <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16, padding: isMobile ? '20px 16px' : '24px 32px' }}>
 
           <SectionTitle>Header Information</SectionTitle>
           <div className="responsive-grid-col2" style={{ marginBottom: 20 }}>
@@ -231,10 +237,10 @@ export default function CreateBill() {
                 <select style={{...inp, border: '1px solid var(--accent)'}} onChange={e => {
                   if (!e.target.value) return
                   const c = JSON.parse(e.target.value)
-                  setForm(f => ({ ...f, car_no: c.no, car_type: c.type || f.car_type }))
+                  setForm(f => ({ ...f, car_no: c.car_no, car_type: c.car_type || f.car_type }))
                 }} defaultValue="">
                   <option value="" disabled>-- Select a Fleet Car --</option>
-                  {savedCars.map(c => <option key={c.no} value={JSON.stringify(c)}>{c.type} - {c.no}</option>)}
+                  {savedCars.map(c => <option key={c.id} value={JSON.stringify(c)}>{c.car_type} - {c.car_no}</option>)}
                 </select>
               </Field>
             )}
@@ -349,7 +355,9 @@ export default function CreateBill() {
                 const link = document.createElement('a')
                 link.download = `Bill_${form.bill_no || 'Draft'}.png`
                 link.href = canvas.toDataURL('image/png', 1.0)
+                document.body.appendChild(link)
                 link.click()
+                document.body.removeChild(link)
               }}
               style={{ flex: 1, background: 'transparent', color: 'var(--text)', border: '1px dashed var(--accent)', borderRadius: 10, padding: '12px 28px', fontSize: 14, fontWeight: 500, cursor: 'pointer', minWidth: '150px' }}
             >
@@ -360,9 +368,11 @@ export default function CreateBill() {
 
         <div style={{ position: 'sticky', top: 24, zIndex: 10 }}>
           <div style={{ color: 'var(--text2)', fontSize: 12, fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 10 }}>Live Preview</div>
-          <div style={{ borderRadius: 12, border: '1px solid var(--border)', background: '#222', width: '100%', overflowX: 'auto', padding: 16 }}>
-             <div ref={printRef} style={{ width: 620, margin: '0 auto', background: '#fff' }}>
-               <BillPreview data={{ ...form, ...calc, amount: calc.final_total }} />
+          <div style={{ borderRadius: 12, border: '1px solid var(--border)', background: '#222', width: '100%', overflowX: 'hidden', padding: isMobile ? '16px 0' : 16, display: 'flex', justifyContent: isMobile ? 'center' : 'flex-start' }}>
+             <div style={{ transform: isMobile ? `scale(${(window.innerWidth - 32) / 620})` : 'none', transformOrigin: 'top left', width: isMobile ? 620 : 620, height: isMobile ? 877 * ((window.innerWidth - 32) / 620) : 'auto' }}>
+               <div ref={printRef} style={{ width: 620, margin: '0 auto', background: '#fff' }}>
+                 <BillPreview data={{ ...form, ...calc, amount: calc.final_total }} />
+               </div>
              </div>
           </div>
         </div>

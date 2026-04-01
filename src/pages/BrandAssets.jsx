@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { supabase } from '../lib/supabase'
+import { supabase, getCars, addCar, removeCar } from '../lib/supabase'
 
 const ASSETS = [
   {
@@ -226,33 +226,47 @@ export default function BrandAssets() {
   const [loading, setLoading] = useState(true)
   const [bucketError, setBucketError] = useState(null)
   
-  const [savedCars, setSavedCars] = useState(() => {
-    try { return JSON.parse(localStorage.getItem('savedCars')) || [] } catch { return [] }
-  })
+  const [savedCars, setSavedCars] = useState([])
   const [newCarNo, setNewCarNo] = useState('')
   const [newCarType, setNewCarType] = useState('')
+  const [carDbError, setCarDbError] = useState(null)
 
-  const handleAddCar = () => {
+  const loadCars = async () => {
+    try {
+      const data = await getCars()
+      setSavedCars(data || [])
+    } catch (e) {
+      setCarDbError(e.message)
+    }
+  }
+
+  const handleAddCar = async () => {
     if (!newCarNo || !newCarType) return
-    const updated = [...savedCars, { no: newCarNo.toUpperCase(), type: newCarType }]
-    setSavedCars(updated)
-    localStorage.setItem('savedCars', JSON.stringify(updated))
-    setNewCarNo('')
-    setNewCarType('')
+    try {
+      const car = await addCar(newCarNo.toUpperCase(), newCarType)
+      setSavedCars(prev => [...prev, car])
+      setNewCarNo('')
+      setNewCarType('')
+    } catch (e) {
+       alert("Database error: Ensure you ran the SQL query to create the saved_cars table.")
+    }
   }
   
-  const handleDeleteCar = (i) => {
-    const updated = savedCars.filter((_, idx) => idx !== i)
-    setSavedCars(updated)
-    localStorage.setItem('savedCars', JSON.stringify(updated))
+  const handleDeleteCar = async (id) => {
+    try {
+      await removeCar(id)
+      setSavedCars(p => p.filter(c => c.id !== id))
+    } catch (e) {
+      alert("Error deleting car. Check database RLS policies.")
+    }
   }
 
   useEffect(() => {
     setLoading(true)
-    loadAllAssetUrls()
-      .then(setUrls)
-      .catch(e => setBucketError(e.message))
-      .finally(() => setLoading(false))
+    Promise.all([
+      loadAllAssetUrls().then(setUrls).catch(e => setBucketError(e.message)),
+      loadCars()
+    ]).finally(() => setLoading(false))
   }, [])
 
   const handleUploaded = (key, url) => {
@@ -359,12 +373,19 @@ export default function BrandAssets() {
           </button>
         </div>
 
+        {carDbError && (
+          <div style={{ background: 'rgba(220,50,50,0.1)', border: '1px solid rgba(220,50,50,0.3)', borderRadius: 12, padding: '16px 20px', color: '#ff6b6b', fontSize: 13, marginBottom: 16 }}>
+            <strong>⚠️ Database setup required for Saved Cars:</strong> {carDbError}
+            <div style={{ marginTop: 4 }}>Run the "setup_cars_table.sql" file content in your Supabase SQL Editor.</div>
+          </div>
+        )}
+
         {savedCars.length > 0 && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {savedCars.map((c, i) => (
-              <div key={i} style={{ display: 'flex', justifyContent: 'space-between', background: 'var(--surface2)', padding: '10px 14px', borderRadius: 8, alignItems: 'center' }}>
-                <div><strong style={{ color: 'var(--accent2)' }}>{c.type}</strong> &nbsp;—&nbsp; {c.no}</div>
-                <button onClick={() => handleDeleteCar(i)} style={{ background: 'transparent', border: 'none', color: 'var(--red)', cursor: 'pointer', fontWeight: 700 }}>Remove</button>
+            {savedCars.map((c) => (
+              <div key={c.id} style={{ display: 'flex', justifyContent: 'space-between', background: 'var(--surface2)', padding: '10px 14px', borderRadius: 8, alignItems: 'center' }}>
+                <div><strong style={{ color: 'var(--accent2)' }}>{c.car_type}</strong> &nbsp;—&nbsp; {c.car_no}</div>
+                <button onClick={() => handleDeleteCar(c.id)} style={{ background: 'transparent', border: 'none', color: 'var(--red)', cursor: 'pointer', fontWeight: 700 }}>Remove</button>
               </div>
             ))}
           </div>
