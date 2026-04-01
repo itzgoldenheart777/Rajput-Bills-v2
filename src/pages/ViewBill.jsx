@@ -114,8 +114,8 @@ export default function ViewBill() {
       </div>
 
       {/* Printable bill */}
-      <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16, padding: 32, display: 'flex', justifyContent: 'center' }}>
-        <div ref={printRef}>
+      <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16, padding: '32px 16px', display: 'flex', justifyContent: 'center', overflowX: 'auto' }}>
+        <div ref={printRef} style={{ width: 620, minWidth: 620, background: '#fff' }}>
           <BillPreview data={bill} />
         </div>
       </div>

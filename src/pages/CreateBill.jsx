@@ -348,15 +348,10 @@ export default function CreateBill() {
 
         <div style={{ position: 'sticky', top: 24, zIndex: 10 }}>
           <div style={{ color: 'var(--text2)', fontSize: 12, fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 10 }}>Live Preview</div>
-          <div style={{ overflow: 'hidden', borderRadius: 12, border: '1px solid var(--border)', background: '#fff', width: '100%' }}>
-            {/* We scale the preview to fit nicely while keeping the printable 620px width */}
-            <div style={{ width: 620, transform: 'scale(matchContainer)', transformOrigin: 'top left' }} >
-                <div style={{ display: 'flex', width: '100%', overflowX: 'auto', paddingBottom: '8px' }}>
-                    <div ref={printRef} style={{ background: '#fff', padding: '10px' }}>
-                      <BillPreview data={{ ...form, ...calc, amount: calc.final_total }} />
-                    </div>
-                </div>
-            </div>
+          <div style={{ borderRadius: 12, border: '1px solid var(--border)', background: '#222', width: '100%', overflowX: 'auto', padding: 16 }}>
+             <div ref={printRef} style={{ width: 620, margin: '0 auto', background: '#fff' }}>
+               <BillPreview data={{ ...form, ...calc, amount: calc.final_total }} />
+             </div>
           </div>
         </div>
       </div>

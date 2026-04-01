@@ -5,12 +5,21 @@ export default function BillPreview({ data, noBorderRadius }) {
   const d = data || {}
   const { logoUrl: carLogo, stampUrl: stampImg, signatureUrl: signatureImg } = useAssets()
 
-  const underline = {
-    display: 'inline-block',
-    borderBottom: '1px solid #111',
-    verticalAlign: 'bottom',
-    paddingBottom: 2,
-    margin: '0 4px',
+  const LineWrap = ({ children, width, val }) => (
+    <span style={{ position: 'relative', display: 'inline-block', width: width, borderBottom: '1px solid #111', margin: '0 4px', textAlign: 'center', lineHeight: 1.2 }}>
+      <span style={{ position: 'absolute', bottom: 2, left: 0, right: 0, fontSize: 13, fontWeight: 700 }}>{val}</span>
+      &nbsp;
+    </span>
+  )
+
+  const BigAmt = ({ label, val }) => {
+    if (!val || val == 0) return null
+    return (
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 12, fontSize: 15, fontWeight: 700, paddingRight: 8 }}>
+        <span style={{ minWidth: 60, textAlign: 'right' }}>{parseInt(val).toLocaleString('en-IN')}</span>
+        <span style={{ minWidth: 40, textAlign: 'right', marginLeft: 8 }}>{label}</span>
+      </div>
+    )
   }
 
   return (
@@ -20,27 +29,26 @@ export default function BillPreview({ data, noBorderRadius }) {
       fontFamily: 'Arial, Helvetica, sans-serif',
       fontSize: 12,
       width: 620,
-      border: '1px solid #111',
-      borderRadius: noBorderRadius ? 0 : 20, // To avoid rounding corners when saving to JPG if needed, though they want it looking exact. It has 20px radius in the picture.
+      border: '1px solid #000',
+      borderRadius: noBorderRadius ? 0 : 20,
       overflow: 'hidden',
       boxSizing: 'border-box',
       lineHeight: 1.5,
+      margin: '0 auto',
     }}>
-
-      {/* ══════════════════════════════════
-          HEADER
-      ══════════════════════════════════ */}
-      <div style={{ padding: '16px 20px 8px', position: 'relative' }}>
-        <div style={{ position: 'absolute', right: 20, top: 16, fontSize: 13, fontWeight: 700 }}>
+      
+      {/* HEADER */}
+      <div style={{ padding: '12px 16px 8px', position: 'relative' }}>
+        <div style={{ position: 'absolute', right: 20, top: 12, fontSize: 12, fontWeight: 700, fontFamily: 'Arial' }}>
           Mob : 7304315584
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', marginTop: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', marginTop: 14 }}>
           <img
             src={carLogo}
             alt="car"
-            style={{ width: 120, height: 60, objectFit: 'contain', flexShrink: 0 }}
+            style={{ width: 110, height: 50, objectFit: 'contain', flexShrink: 0 }}
           />
-          <div style={{ flex: 1, textAlign: 'center', paddingRight: 40 }}>
+          <div style={{ flex: 1, textAlign: 'center', paddingRight: 20 }}>
             <div style={{
               fontSize: 34,
               fontWeight: 900,
@@ -62,178 +70,151 @@ export default function BillPreview({ data, noBorderRadius }) {
         </div>
       </div>
 
-      {/* ══════════════════════════════════
-          M/S  +  BILL NO  +  DATE
-      ══════════════════════════════════ */}
-      <div style={{ padding: '8px 20px', borderTop: '2px solid #111', borderBottom: '1px solid #111', display: 'flex', flexDirection: 'column', gap: 6 }}>
+      {/* M/S + BILL NO + DATE */}
+      <div style={{ padding: '6px 16px', borderTop: '1px solid #000', borderBottom: '1px solid #000', display: 'flex', flexDirection: 'column', gap: 6 }}>
         <div style={{ display: 'flex', alignItems: 'flex-end' }}>
-          <span style={{ fontWeight: 700, fontSize: 13, marginRight: 4 }}>M/s.</span>
-          <span style={{ flex: 1, ...underline, minHeight: 18, fontSize: 14, fontWeight: 700 }}>
-            {d.client_name || d.party_name || ''}
-          </span>
-          <span style={{ fontSize: 12, marginLeft: 16, fontWeight: 700 }}>Bill No.</span>
-          <span style={{ ...underline, minWidth: 150, fontWeight: 700 }}>
-            {d.bill_no || ''}
-          </span>
+          <span style={{ fontWeight: 700, fontSize: 12, marginRight: 2 }}>M/s.</span>
+          <LineWrap width="100%" val={d.client_name || d.party_name || ''} />
+          <span style={{ fontSize: 12, marginLeft: 16, fontWeight: 700, whiteSpace: 'nowrap' }}>Bill No.</span>
+          <LineWrap width="140px" val={d.bill_no || ''} />
         </div>
         <div style={{ display: 'flex', alignItems: 'flex-end' }}>
-          <span style={{ flex: 1, ...underline, minHeight: 18, fontSize: 12 }}>
-            {d.route || d.trip_route || ''}
-          </span>
-          <span style={{ fontSize: 12, marginLeft: 16, fontWeight: 700 }}>Date</span>
-          <span style={{ ...underline, minWidth: 150, fontWeight: 700 }}>
-            {d.date || ''}
-          </span>
+          <LineWrap width="100%" val={d.route || d.trip_route || ''} />
+          <span style={{ fontSize: 12, marginLeft: 16, fontWeight: 700, whiteSpace: 'nowrap' }}>Date</span>
+          <LineWrap width="140px" val={d.date || ''} />
         </div>
       </div>
 
-      {/* ══════════════════════════════════
-          DUTY SLIP / CAR TYPE / CAR NO
-      ══════════════════════════════════ */}
+      {/* DUTY SLIP / CAR TYPE / CAR NO */}
       <div style={{
-        display: 'grid', gridTemplateColumns: '1fr auto auto', gap: 20,
-        padding: '6px 20px', borderBottom: '1px solid #111', fontSize: 13, fontWeight: 700
+        display: 'grid', gridTemplateColumns: '1fr auto auto', gap: 30,
+        padding: '6px 16px', borderBottom: '1px solid #000', fontSize: 12, fontWeight: 700, alignItems: 'center'
       }}>
-        <div>Duty Slip <span style={{ ...underline, minWidth: 80, fontWeight: 400 }}>{d.duty_slip || ''}</span></div>
-        <div>Car type <span style={{ ...underline, minWidth: 60, fontWeight: 400 }}>{d.car_type || ''}</span></div>
-        <div>Car No. <span style={{ minWidth: 80, display: 'inline-block', fontWeight: 700 }}>{d.car_no || ''}</span></div>
+        <div>Duty Slip <LineWrap width="80px" val={d.duty_slip || ''} /></div>
+        <div>Car type <LineWrap width="60px" val={d.car_type || ''} /></div>
+        <div>Car No. <LineWrap width="90px" val={d.car_no || ''} /></div>
       </div>
 
-      {/* ══════════════════════════════════
-          TABLE HEADER
-      ══════════════════════════════════ */}
+      {/* TABLE HEADER */}
       <div style={{
-        display: 'grid', gridTemplateColumns: '1fr 140px',
-        padding: '6px 20px', borderBottom: '1px solid #111', fontWeight: 700, fontSize: 13,
+        display: 'grid', gridTemplateColumns: '1fr 115px',
+        borderBottom: '1px solid #000', fontWeight: 700, fontSize: 12,
       }}>
-        <div style={{ textAlign: 'center' }}>Particulars</div>
-        <div style={{ textAlign: 'center', borderLeft: '1px solid #111' }}>
-          Amount <br/> Rs. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; P.
+        <div style={{ textAlign: 'center', padding: '6px 0' }}>Particulars</div>
+        <div style={{ textAlign: 'center', borderLeft: '1px solid #000', display: 'flex', flexDirection: 'column' }}>
+          <div style={{ padding: '2px 0' }}>Amount</div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 8px' }}>
+             <span>Rs.</span><span>P.</span>
+          </div>
         </div>
       </div>
 
-      {/* ══════════════════════════════════
-          BODY
-      ══════════════════════════════════ */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 140px', minHeight: 340 }}>
-        {/* LEFT: rows */}
-        <div style={{ padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+      {/* BODY */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 115px', minHeight: 400 }}>
+        {/* LEFT: Rows mapping EXACTLY to the print image */}
+        <div style={{ padding: '16px 12px', display: 'flex', flexDirection: 'column', gap: 24, fontSize: 12 }}>
           
-          <div style={{ display: 'flex', alignItems: 'baseline' }}>
-            <span style={{ minWidth: 70 }}>Particulars</span>
-            <span style={{ ...underline, flex: 1, maxWidth: 160 }}></span>
-            <span style={{ fontSize: 11 }}>{d.particulars_rate || '4 Hrs. 40 Km. / 8Hrs. 80Km.'}</span>
+          <div style={{ display: 'flex', alignItems: 'flex-end', whiteSpace: 'nowrap' }}>
+            <span>Particulars</span>
+            <LineWrap width="120px" val="" />
+            <span style={{ flex: 1 }}>4 Hrs. 40 Km. / 8Hrs. 80Km.</span>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'baseline' }}>
-            <span style={{ minWidth: 70 }}>Total Kms.</span>
-            <span style={{ ...underline, width: 80, textAlign: 'center' }}>{d.total_kms || d.total_km || ''}</span>
-            <span style={{ margin: '0 8px' }}>Extra</span>
-            <span style={{ ...underline, width: 70, textAlign: 'center' }}>{d.extra_kms || d.extra_km || ''}</span>
-            <span style={{ margin: '0 8px' }}>@</span>
-            <span style={{ ...underline, width: 70, textAlign: 'center' }}>{d.extra_kms_rate || d.rate_per_km || ''}</span>
+          <div style={{ display: 'flex', alignItems: 'flex-end', whiteSpace: 'nowrap' }}>
+            <span>Total Kms.</span>
+            <LineWrap width="80px" val={d.total_kms || d.total_km || ''} />
+            <span style={{ marginLeft: 8 }}>Extra</span>
+            <LineWrap width="70px" val={d.extra_kms || d.extra_km || ''} />
+            <span style={{ marginLeft: 8 }}>@</span>
+            <LineWrap width="70px" val={d.extra_kms_rate || d.rate_per_km || ''} />
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'baseline' }}>
-            <span style={{ minWidth: 70 }}>Total Hrs.</span>
-            <span style={{ ...underline, width: 80, textAlign: 'center' }}>{d.total_hrs || d.total_hours || ''}</span>
-            <span style={{ margin: '0 8px' }}>Extra</span>
-            <span style={{ ...underline, width: 70, textAlign: 'center' }}>{d.extra_hrs || ''}</span>
-            <span style={{ margin: '0 8px' }}>@</span>
-            <span style={{ ...underline, width: 70, textAlign: 'center' }}>{d.extra_hrs_rate || ''}</span>
+          <div style={{ display: 'flex', alignItems: 'flex-end', whiteSpace: 'nowrap' }}>
+            <span>Total Hrs.</span>
+            <LineWrap width="80px" val={d.total_hrs || d.total_hours || ''} />
+            <span style={{ marginLeft: 8 }}>Extra</span>
+            <LineWrap width="70px" val={d.extra_hrs || ''} />
+            <span style={{ marginLeft: 8 }}>@</span>
+            <LineWrap width="70px" val={d.extra_hrs_rate || ''} />
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'baseline' }}>
-            <span style={{ minWidth: 70 }}>Outstation</span>
-            <span style={{ ...underline, width: 80, textAlign: 'center' }}>{d.outstation || ''}</span>
-            <span style={{ margin: '0 8px' }}>Extra</span>
-            <span style={{ ...underline, width: 70, textAlign: 'center' }}>{d.outstation_extra || ''}</span>
-            <span style={{ margin: '0 8px' }}>@</span>
-            <span style={{ ...underline, width: 70, textAlign: 'center' }}>{d.outstation_rate || ''}</span>
+          <div style={{ display: 'flex', alignItems: 'flex-end', whiteSpace: 'nowrap' }}>
+            <span>Outstation</span>
+            <LineWrap width="80px" val={d.outstation || ''} />
+            <span style={{ marginLeft: 8 }}>Extra</span>
+            <LineWrap width="70px" val={d.outstation_extra || ''} />
+            <span style={{ marginLeft: 8 }}>@</span>
+            <LineWrap width="70px" val={d.outstation_rate || ''} />
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: 16 }}>
-            <div>
-              Toll /Parking
-              <span style={{ ...underline, width: 140, marginLeft: 8 }}>{d.toll_parking || ''}</span>
-            </div>
+          <div style={{ display: 'flex', alignItems: 'flex-end', whiteSpace: 'nowrap' }}>
+            <span>Toll /Parking</span>
+            <LineWrap width="140px" val={d.toll_parking || ''} />
             <div style={{ flex: 1 }} />
-            <span style={{ ...underline, width: 80, textAlign: 'center' }}>{d.toll_amount || d.toll || ''}</span>
+            <LineWrap width="80px" val="" />
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'baseline' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-end', whiteSpace: 'nowrap' }}>
             <span>Driver's Food/Overnight/outstation Allowance</span>
-            <span style={{ ...underline, width: 180, marginLeft: 8, textAlign: 'center' }}>
-              {d.driver_allowance || d.da || ''}
+            <span style={{ flex: 1 }}>
+              <LineWrap width="100%" val={d.driver_allowance || d.da || ''} />
             </span>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'baseline', marginTop: 8 }}>
-            Car used by
-            <span style={{ ...underline, width: 220, marginLeft: 8 }}>{d.car_used_by || ''}</span>
+          <div style={{ display: 'flex', alignItems: 'flex-end', whiteSpace: 'nowrap' }}>
+            <span>Car used by</span>
+            <span style={{ flex: 1, paddingLeft: 4 }}>
+              <LineWrap width="140px" val={d.car_used_by || ''} />
+            </span>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'baseline' }}>
-            Car Booked by
-            <span style={{ marginLeft: 8 }}>{d.car_booked_by || ''}</span>
+          <div style={{ display: 'flex', alignItems: 'flex-end', whiteSpace: 'nowrap' }}>
+            <span>Car Booked by</span>
+            <span style={{ paddingLeft: 4, fontWeight: 700 }}>{d.car_booked_by || ''}</span>
           </div>
 
         </div>
 
-        {/* RIGHT: amount */}
-        <div style={{ padding: '16px 12px', borderLeft: '1px solid #111', textAlign: 'right', fontWeight: 700, fontSize: 14 }}>
-           {(d.trip_cost > 0 || d.amount) && (
-             <div style={{ marginBottom: 12 }}>{d.trip_cost ? parseInt(d.trip_cost).toLocaleString('en-IN') : parseInt(d.amount).toLocaleString('en-IN')} KM</div>
-           )}
-           {(d.toll > 0 || d.toll_amount > 0) && (
-             <div style={{ marginBottom: 12 }}>{d.toll ? parseInt(d.toll).toLocaleString('en-IN') : parseInt(d.toll_amount).toLocaleString('en-IN')} Toll</div>
-           )}
-           {(d.da > 0 || d.driver_allowance) && (
-             <div style={{ marginBottom: 12 }}>{parseInt(d.da || d.driver_allowance).toLocaleString('en-IN')} DA</div>
-           )}
-           {d.outstation > 0 && (
-             <div style={{ marginBottom: 12 }}>{parseInt(d.outstation).toLocaleString('en-IN')} OS</div>
-           )}
+        {/* RIGHT: Numeric break down */}
+        <div style={{ padding: '36px 4px 16px', borderLeft: '1px solid #000', textAlign: 'right', display: 'flex', flexDirection: 'column', gap: 10 }}>
+           <BigAmt label="KM" val={d.trip_cost || d.amount} />
+           <BigAmt label="Toll" val={d.toll_amount || d.toll} />
+           <BigAmt label="DA" val={d.da || d.driver_allowance} />
+           <BigAmt label="OS" val={d.outstation} />
         </div>
       </div>
 
-      {/* ══════════════════════════════════
-          TOTAL BAR
-      ══════════════════════════════════ */}
+      {/* TOTAL BAR */}
       <div style={{
-        borderTop: '2px solid #111', padding: '8px 20px',
-        display: 'grid', gridTemplateColumns: '1fr 140px',
-        borderBottom: '1px solid #111',
+        borderTop: '1px solid #000', padding: '6px 0',
+        display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) auto 115px',
+        borderBottom: '1px solid #000', alignItems: 'center'
       }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', paddingRight: 20 }}>
-          <span style={{ fontSize: 11, fontWeight: 700 }}>PAN CARD NO : CBHPS4753G</span>
-          <span style={{ fontSize: 12, fontWeight: 700 }}>E. &amp; O. E.</span>
-        </div>
-        <div style={{ fontSize: 14, fontWeight: 700, display: 'flex', alignItems: 'center' }}>
-          <span>Total</span>
-          <span style={{ ...underline, flex: 1, minWidth: 90, textAlign: 'center', margin: '0 0 0 8px', fontSize: 15 }}>
+        <div style={{ fontSize: 10, fontWeight: 700, paddingLeft: 16 }}>PAN CARD NO : CBHPS4753G</div>
+        <div style={{ fontSize: 11, fontWeight: 700, paddingRight: 40 }}>E. &amp; O. E.</div>
+        <div style={{ fontSize: 12, fontWeight: 700, display: 'flex', alignItems: 'center' }}>
+          <span style={{ position: 'relative', left: -30 }}>Total</span>
+          <span style={{ width: '100%', textAlign: 'center', fontSize: 14 }}>
             {d.final_total ? `${parseInt(d.final_total).toLocaleString('en-IN')} /-` : (d.amount ? `${parseInt(d.amount).toLocaleString('en-IN')} /-` : '')}
           </span>
         </div>
       </div>
 
-      {/* ══════════════════════════════════
-          FOOTER
-      ══════════════════════════════════ */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 195px', padding: '12px 20px 16px', gap: 16, alignItems: 'flex-start' }}>
-        <div style={{ fontSize: 10, color: '#333', lineHeight: 1.6 }}>
+      {/* FOOTER */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 170px', padding: '8px 16px 16px', gap: 16, alignItems: 'flex-start' }}>
+        <div style={{ fontSize: 9.5, color: '#333', lineHeight: 1.5, paddingTop: 4 }}>
           * &nbsp;No. disputes of objections will be entertained if not brought to our notice, within 10 days from the date from the date of hereof<br />
           * &nbsp;Interest @10%P.A. will be charged on accounts not settled within 30 days.
         </div>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 11, marginBottom: 8 }}>
-            For <span style={{ color: '#d32f2f', fontWeight: 700 }}>Rajput Tours &amp; Travels</span>
+          <div style={{ fontSize: 10, marginBottom: 4 }}>
+            For <span style={{ color: '#d32f2f', fontWeight: 700, fontSize: 11 }}>Rajput Tours &amp; Travels</span>
           </div>
-          <div style={{ marginBottom: 4, display: 'flex', justifyContent: 'center', position: 'relative', height: 40 }}>
-            {stampImg && <img src={stampImg} alt="Stamp" style={{ width: 150, objectFit: 'contain' }} />}
+          <div style={{ marginBottom: 4, display: 'flex', justifyContent: 'center', position: 'relative', height: 45 }}>
+            {stampImg && <img src={stampImg} alt="Stamp" style={{ width: 140, objectFit: 'contain' }} />}
             {signatureImg && (
               <img src={signatureImg} alt="Signature" style={{
-                width: 70, objectFit: 'contain', position: 'absolute', right: 30, bottom: -10, opacity: 0.9, mixBlendMode: 'multiply'
+                width: 65, objectFit: 'contain', position: 'absolute', right: 25, bottom: -8, opacity: 0.9, mixBlendMode: 'multiply'
               }} />
             )}
           </div>
