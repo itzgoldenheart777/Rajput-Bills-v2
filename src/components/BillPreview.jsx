@@ -5,65 +5,48 @@ export default function BillPreview({ data, noBorderRadius }) {
   const d = data || {}
   const { logoUrl: carLogo, stampUrl: stampImg, signatureUrl: signatureImg } = useAssets()
 
-  const LineWrap = ({ children, width, val }) => (
-    <span style={{ position: 'relative', display: 'inline-block', width: width, borderBottom: '1px solid #111', margin: '0 4px', textAlign: 'center', lineHeight: 1.2 }}>
-      <span style={{ position: 'absolute', bottom: 2, left: 0, right: 0, fontSize: 13, fontWeight: 700 }}>{val}</span>
+  const LineWrap = ({ width, val }) => (
+    <span style={{ position: 'relative', display: 'inline-block', width: width, borderBottom: '1px solid #000', margin: '0 4px', textAlign: 'center', lineHeight: 1.2 }}>
+      <span style={{ position: 'absolute', bottom: 2, left: 0, right: 0, fontSize: 13, fontWeight: 700, whiteSpace: 'nowrap' }}>{val || ''}</span>
       &nbsp;
     </span>
   )
 
-  const BigAmt = ({ label, val }) => {
-    if (!val || val == 0) return null
-    return (
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 12, fontSize: 15, fontWeight: 700, paddingRight: 8 }}>
-        <span style={{ minWidth: 60, textAlign: 'right' }}>{parseInt(val).toLocaleString('en-IN')}</span>
-        <span style={{ minWidth: 40, textAlign: 'right', marginLeft: 8 }}>{label}</span>
-      </div>
-    )
+  const printAmt = (val) => {
+    if (!val || val == 0) return ''
+    return parseInt(val).toLocaleString('en-IN')
   }
 
   return (
     <div style={{
-      background: '#fff',
-      color: '#000',
-      fontFamily: 'Arial, Helvetica, sans-serif',
-      fontSize: 12,
-      width: 620,
-      border: '1px solid #000',
-      borderRadius: noBorderRadius ? 0 : 20,
-      overflow: 'hidden',
-      boxSizing: 'border-box',
-      lineHeight: 1.5,
-      margin: '0 auto',
+      background: '#fff', color: '#000', fontFamily: 'Arial, Helvetica, sans-serif',
+      fontSize: 12, width: 620, border: '1px solid #000', borderRadius: noBorderRadius ? 0 : 22,
+      overflow: 'hidden', boxSizing: 'border-box', margin: '0 auto', position: 'relative'
     }}>
       
       {/* HEADER */}
-      <div style={{ padding: '12px 16px 8px', position: 'relative' }}>
-        <div style={{ position: 'absolute', right: 20, top: 12, fontSize: 12, fontWeight: 700, fontFamily: 'Arial' }}>
+      <div style={{ padding: '24px 20px 10px', position: 'relative' }}>
+        <div style={{ position: 'absolute', right: 24, top: 24, fontSize: 12, fontWeight: 700, fontFamily: 'Arial', color: '#333' }}>
           Mob : 7304315584
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', marginTop: 14 }}>
+        <div style={{ display: 'flex', alignItems: 'center', marginTop: 10 }}>
           <img
-            src={carLogo}
-            alt="car"
-            style={{ width: 110, height: 50, objectFit: 'contain', flexShrink: 0 }}
+            src={carLogo} alt="car"
+            style={{ width: 110, height: 60, objectFit: 'contain', flexShrink: 0, marginLeft: 10, alignSelf: 'flex-start', marginTop: 10 }}
           />
-          <div style={{ flex: 1, textAlign: 'center', paddingRight: 20 }}>
+          <div style={{ flex: 1, textAlign: 'center', paddingRight: 35 }}>
             <div style={{
-              fontSize: 34,
-              fontWeight: 900,
-              color: '#d32f2f',
+              fontSize: 34, fontWeight: 900, color: '#e32929',
               fontFamily: 'Georgia, "Times New Roman", serif',
-              letterSpacing: 0.5,
-              lineHeight: 1.1,
-              marginBottom: 4,
+              letterSpacing: 0.5, lineHeight: 1.1, marginBottom: 8,
+              WebkitTextStroke: '0.5px #cc0000', // Subtle stroke to mimic the thick printed red
             }}>
               Rajput Tour &amp; Travels
             </div>
-            <div style={{ fontSize: 10, color: '#111', fontWeight: 600 }}>
+            <div style={{ fontSize: 11, color: '#222', fontWeight: 600, letterSpacing: 0.2 }}>
               Flat No - 706, Bldg No - 14, H - 1, Shradha Sabri Society, Sanghrsh Nagar,
             </div>
-            <div style={{ fontSize: 10, color: '#111', fontWeight: 600 }}>
+            <div style={{ fontSize: 11, color: '#222', fontWeight: 600, letterSpacing: 0.2 }}>
               Chandivali, Andheri (E) Mumbai - 400 072 | Email : rajputtoursandtravels2016@gmail.com
             </div>
           </div>
@@ -71,154 +54,174 @@ export default function BillPreview({ data, noBorderRadius }) {
       </div>
 
       {/* M/S + BILL NO + DATE */}
-      <div style={{ padding: '6px 16px', borderTop: '1px solid #000', borderBottom: '1px solid #000', display: 'flex', flexDirection: 'column', gap: 6 }}>
-        <div style={{ display: 'flex', alignItems: 'flex-end' }}>
-          <span style={{ fontWeight: 700, fontSize: 12, marginRight: 2 }}>M/s.</span>
-          <LineWrap width="100%" val={d.client_name || d.party_name || ''} />
-          <span style={{ fontSize: 12, marginLeft: 16, fontWeight: 700, whiteSpace: 'nowrap' }}>Bill No.</span>
-          <LineWrap width="140px" val={d.bill_no || ''} />
+      <div style={{ padding: '16px 20px', borderTop: '2px solid #000', display: 'flex', flexDirection: 'column', gap: 14 }}>
+        <div style={{ display: 'flex', alignItems: 'flex-end', width: '100%' }}>
+          <span style={{ fontWeight: 700, fontSize: 12, marginRight: 4, transform: 'translateY(-2px)' }}>M/s.</span>
+          <span style={{ borderBottom: '1px solid #000', flex: 1, position: 'relative', margin: '0 8px' }}>
+            <span style={{ position: 'absolute', bottom: 2, left: 10, fontSize: 13, fontWeight: 700 }}>{d.client_name || d.party_name || ''}</span>
+            &nbsp;
+          </span>
+          <span style={{ fontSize: 12, fontWeight: 700, whiteSpace: 'nowrap', transform: 'translateY(-2px)' }}>Bill No.</span>
+          <span style={{ borderBottom: '1px solid #000', width: '130px', position: 'relative', marginLeft: 8 }}>
+            <span style={{ position: 'absolute', bottom: 2, left: 10, fontSize: 13, fontWeight: 700 }}>{d.bill_no || ''}</span>
+            &nbsp;
+          </span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'flex-end' }}>
-          <LineWrap width="100%" val={d.route || d.trip_route || ''} />
-          <span style={{ fontSize: 12, marginLeft: 16, fontWeight: 700, whiteSpace: 'nowrap' }}>Date</span>
-          <LineWrap width="140px" val={d.date || ''} />
+        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'flex-end', width: '100%' }}>
+           <span style={{ borderBottom: '1px solid #000', width: '300px' }}>&nbsp;</span>
+           <span style={{ fontSize: 12, fontWeight: 700, whiteSpace: 'nowrap', marginLeft: 8, transform: 'translateY(-2px)' }}>Date</span>
+           <span style={{ borderBottom: '1px solid #000', width: '130px', position: 'relative', marginLeft: 8 }}>
+            <span style={{ position: 'absolute', bottom: 2, left: 10, fontSize: 13, fontWeight: 700 }}>{d.date || ''}</span>
+            &nbsp;
+          </span>
         </div>
       </div>
 
       {/* DUTY SLIP / CAR TYPE / CAR NO */}
       <div style={{
-        display: 'grid', gridTemplateColumns: '1fr auto auto', gap: 30,
-        padding: '6px 16px', borderBottom: '1px solid #000', fontSize: 12, fontWeight: 700, alignItems: 'center'
+        display: 'flex', justifyContent: 'space-between',
+        padding: '2px 20px 8px', fontSize: 12, fontWeight: 700, alignItems: 'center'
       }}>
-        <div>Duty Slip <LineWrap width="80px" val={d.duty_slip || ''} /></div>
-        <div>Car type <LineWrap width="60px" val={d.car_type || ''} /></div>
-        <div>Car No. <LineWrap width="90px" val={d.car_no || ''} /></div>
+        <div style={{ display: 'flex', alignItems: 'flex-end', width: '40%' }}>
+           Duty Slip <span style={{ borderBottom: '1px solid #000', flex: 1, position: 'relative', marginLeft: 8 }}><span style={{position:'absolute', bottom: 2, left: 10}}>{d.duty_slip || ''}</span>&nbsp;</span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'flex-end', width: '25%' }}>
+           Car type <span style={{ borderBottom: '1px solid #000', flex: 1, position: 'relative', marginLeft: 8 }}><span style={{position:'absolute', bottom: 2, left: 10}}>{d.car_type || ''}</span>&nbsp;</span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'flex-end', width: '25%' }}>
+           Car No. <span style={{ borderBottom: '1px solid #000', flex: 1, position: 'relative', marginLeft: 8 }}><span style={{position:'absolute', bottom: 2, left: 10}}>{d.car_no || ''}</span>&nbsp;</span>
+        </div>
       </div>
 
       {/* TABLE HEADER */}
       <div style={{
-        display: 'grid', gridTemplateColumns: '1fr 115px',
-        borderBottom: '1px solid #000', fontWeight: 700, fontSize: 12,
+        display: 'grid', gridTemplateColumns: '1fr 110px',
+        borderBottom: '1px solid #000', borderTop: '1px solid #000', fontWeight: 700, fontSize: 12,
       }}>
         <div style={{ textAlign: 'center', padding: '6px 0' }}>Particulars</div>
         <div style={{ textAlign: 'center', borderLeft: '1px solid #000', display: 'flex', flexDirection: 'column' }}>
-          <div style={{ padding: '2px 0' }}>Amount</div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 8px' }}>
+          <div style={{ padding: '2px 0 0', fontSize: 11, fontWeight: 700 }}>Amount</div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 8px 4px', fontSize: 11, fontWeight: 700 }}>
              <span>Rs.</span><span>P.</span>
           </div>
         </div>
       </div>
 
-      {/* BODY */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 115px', minHeight: 400 }}>
-        {/* LEFT: Rows mapping EXACTLY to the print image */}
-        <div style={{ padding: '16px 12px', display: 'flex', flexDirection: 'column', gap: 24, fontSize: 12 }}>
+      {/* TABLE BODY */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 110px', minHeight: 460 }}>
+        {/* LEFT PANE */}
+        <div style={{ padding: '24px 16px', display: 'flex', flexDirection: 'column', gap: 32, fontSize: 12, color: '#222' }}>
           
           <div style={{ display: 'flex', alignItems: 'flex-end', whiteSpace: 'nowrap' }}>
             <span>Particulars</span>
-            <LineWrap width="120px" val="" />
-            <span style={{ flex: 1 }}>4 Hrs. 40 Km. / 8Hrs. 80Km.</span>
+            <LineWrap width="160px" val={d.particulars_rate?.split(' ')[0] || ''} />
+            <span style={{ fontSize: 12 }}>{d.particulars_rate || '4 Hrs. 40 Km. / 8Hrs. 80Km.'}</span>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'flex-end', whiteSpace: 'nowrap' }}>
-            <span>Total Kms.</span>
+            <span style={{ width: 65 }}>Total Kms.</span>
             <LineWrap width="80px" val={d.total_kms || d.total_km || ''} />
-            <span style={{ marginLeft: 8 }}>Extra</span>
-            <LineWrap width="70px" val={d.extra_kms || d.extra_km || ''} />
-            <span style={{ marginLeft: 8 }}>@</span>
-            <LineWrap width="70px" val={d.extra_kms_rate || d.rate_per_km || ''} />
+            <span style={{ width: 40, textAlign: 'center' }}>Extra</span>
+            <LineWrap width="90px" val={d.extra_kms || d.extra_km || ''} />
+            <span style={{ width: 20, textAlign: 'center' }}>@</span>
+            <LineWrap width="90px" val={d.extra_kms_rate || d.rate_per_km || ''} />
           </div>
 
           <div style={{ display: 'flex', alignItems: 'flex-end', whiteSpace: 'nowrap' }}>
-            <span>Total Hrs.</span>
+            <span style={{ width: 65 }}>Total Hrs.</span>
             <LineWrap width="80px" val={d.total_hrs || d.total_hours || ''} />
-            <span style={{ marginLeft: 8 }}>Extra</span>
-            <LineWrap width="70px" val={d.extra_hrs || ''} />
-            <span style={{ marginLeft: 8 }}>@</span>
-            <LineWrap width="70px" val={d.extra_hrs_rate || ''} />
+            <span style={{ width: 40, textAlign: 'center' }}>Extra</span>
+            <LineWrap width="90px" val={d.extra_hrs || ''} />
+            <span style={{ width: 20, textAlign: 'center' }}>@</span>
+            <LineWrap width="90px" val={d.extra_hrs_rate || ''} />
           </div>
 
           <div style={{ display: 'flex', alignItems: 'flex-end', whiteSpace: 'nowrap' }}>
-            <span>Outstation</span>
+            <span style={{ width: 65 }}>Outstation</span>
             <LineWrap width="80px" val={d.outstation || ''} />
-            <span style={{ marginLeft: 8 }}>Extra</span>
-            <LineWrap width="70px" val={d.outstation_extra || ''} />
-            <span style={{ marginLeft: 8 }}>@</span>
-            <LineWrap width="70px" val={d.outstation_rate || ''} />
+            <span style={{ width: 40, textAlign: 'center' }}>Extra</span>
+            <LineWrap width="90px" val={d.outstation_extra || ''} />
+            <span style={{ width: 20, textAlign: 'center' }}>@</span>
+            <LineWrap width="90px" val={d.outstation_rate || ''} />
           </div>
 
           <div style={{ display: 'flex', alignItems: 'flex-end', whiteSpace: 'nowrap' }}>
-            <span>Toll /Parking</span>
-            <LineWrap width="140px" val={d.toll_parking || ''} />
-            <div style={{ flex: 1 }} />
-            <LineWrap width="80px" val="" />
+            <span style={{ width: 80 }}>Toll /Parking</span>
+            <LineWrap width="110px" val={d.toll_parking || ''} />
+            <span style={{ width: 50 }}></span>
+            <LineWrap width="100px" val="" />
           </div>
 
           <div style={{ display: 'flex', alignItems: 'flex-end', whiteSpace: 'nowrap' }}>
             <span>Driver's Food/Overnight/outstation Allowance</span>
-            <span style={{ flex: 1 }}>
-              <LineWrap width="100%" val={d.driver_allowance || d.da || ''} />
-            </span>
+            <LineWrap width="160px" val={d.driver_allowance || d.da || ''} />
           </div>
 
           <div style={{ display: 'flex', alignItems: 'flex-end', whiteSpace: 'nowrap' }}>
             <span>Car used by</span>
-            <span style={{ flex: 1, paddingLeft: 4 }}>
-              <LineWrap width="140px" val={d.car_used_by || ''} />
-            </span>
+            <LineWrap width="110px" val={d.car_used_by || ''} />
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'flex-end', whiteSpace: 'nowrap' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-end', whiteSpace: 'nowrap', marginTop: 10 }}>
             <span>Car Booked by</span>
-            <span style={{ paddingLeft: 4, fontWeight: 700 }}>{d.car_booked_by || ''}</span>
+            <span style={{ paddingLeft: 8, fontWeight: 700, fontSize: 13 }}>{d.car_booked_by || ''}</span>
           </div>
 
         </div>
 
-        {/* RIGHT: Numeric break down */}
-        <div style={{ padding: '36px 4px 16px', borderLeft: '1px solid #000', textAlign: 'right', display: 'flex', flexDirection: 'column', gap: 10 }}>
-           <BigAmt label="KM" val={d.trip_cost || d.amount} />
-           <BigAmt label="Toll" val={d.toll_amount || d.toll} />
-           <BigAmt label="DA" val={d.da || d.driver_allowance} />
-           <BigAmt label="OS" val={d.outstation} />
+        {/* RIGHT PANE (Amounts) */}
+        <div style={{ borderLeft: '1px solid #000', display: 'flex', flexDirection: 'column', gap: 32, padding: '24px 8px 16px', position: 'relative' }}>
+           {/* Positioned exactly matching the lines on the left visually */}
+           <div style={{ textAlign: 'right', fontWeight: 700, fontSize: 14, marginTop: 4 }}>{printAmt(d.trip_cost || d.amount)}</div>
+           <div style={{ textAlign: 'right', fontWeight: 700, fontSize: 14, marginTop: 12 }}></div>
+           <div style={{ textAlign: 'right', fontWeight: 700, fontSize: 14, marginTop: 12 }}></div>
+           <div style={{ textAlign: 'right', fontWeight: 700, fontSize: 14, marginTop: 12 }}>{printAmt(d.outstation)}</div>
+           <div style={{ textAlign: 'right', fontWeight: 700, fontSize: 14, marginTop: 12 }}>{printAmt(d.toll_amount || d.toll)}</div>
+           <div style={{ textAlign: 'right', fontWeight: 700, fontSize: 14, marginTop: 12 }}>{printAmt(d.da || d.driver_allowance)}</div>
         </div>
       </div>
 
       {/* TOTAL BAR */}
       <div style={{
-        borderTop: '1px solid #000', padding: '6px 0',
-        display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) auto 115px',
-        borderBottom: '1px solid #000', alignItems: 'center'
+        borderTop: '1px solid #000', display: 'flex', borderBottom: '1px solid #000', alignItems: 'center'
       }}>
-        <div style={{ fontSize: 10, fontWeight: 700, paddingLeft: 16 }}>PAN CARD NO : CBHPS4753G</div>
-        <div style={{ fontSize: 11, fontWeight: 700, paddingRight: 40 }}>E. &amp; O. E.</div>
-        <div style={{ fontSize: 12, fontWeight: 700, display: 'flex', alignItems: 'center' }}>
-          <span style={{ position: 'relative', left: -30 }}>Total</span>
-          <span style={{ width: '100%', textAlign: 'center', fontSize: 14 }}>
-            {d.final_total ? `${parseInt(d.final_total).toLocaleString('en-IN')} /-` : (d.amount ? `${parseInt(d.amount).toLocaleString('en-IN')} /-` : '')}
-          </span>
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', padding: '6px 16px' }}>
+           <div style={{ fontSize: 10, fontWeight: 700, fontFamily: 'Arial' }}>PAN CARD NO : CBHPS4753G</div>
+           <div style={{ fontSize: 12, fontWeight: 800, fontFamily: 'Arial', flex: 1, textAlign: 'center' }}>E. &amp; O. E.</div>
+           <div style={{ fontSize: 13, fontWeight: 700, paddingRight: 8 }}>Total</div>
+        </div>
+        <div style={{ width: 110, borderLeft: '1px solid #000', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', padding: '6px 0' }}>
+           <span style={{ fontSize: 15, fontWeight: 700 }}>
+             {d.final_total ? `${printAmt(d.final_total)}` : (parseInt(d.amount) ? `${printAmt(d.amount)}` : '')}
+           </span>
         </div>
       </div>
 
       {/* FOOTER */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 170px', padding: '8px 16px 16px', gap: 16, alignItems: 'flex-start' }}>
-        <div style={{ fontSize: 9.5, color: '#333', lineHeight: 1.5, paddingTop: 4 }}>
-          * &nbsp;No. disputes of objections will be entertained if not brought to our notice, within 10 days from the date from the date of hereof<br />
-          * &nbsp;Interest @10%P.A. will be charged on accounts not settled within 30 days.
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 200px', padding: '10px 16px 12px', gap: 16, alignItems: 'flex-start' }}>
+        <div style={{ fontSize: 10.5, color: '#111', lineHeight: 1.4, fontFamily: 'Arial' }}>
+          * &nbsp;No. disputes of objections will be entertained if not brought to<br/>
+            &nbsp;&nbsp;&nbsp;our notice, within 10 days from the date from the date of<br/>
+            &nbsp;&nbsp;&nbsp;hereof<br />
+          * &nbsp;Interest @10%P.A. will be charged on accounts not settled<br/>
+            &nbsp;&nbsp;&nbsp;within 30 days.
         </div>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 10, marginBottom: 4 }}>
-            For <span style={{ color: '#d32f2f', fontWeight: 700, fontSize: 11 }}>Rajput Tours &amp; Travels</span>
+          <div style={{ fontSize: 11, marginBottom: 8, fontFamily: 'Arial' }}>
+            For <span style={{ color: '#d32f2f', fontWeight: 700, fontSize: 12 }}>Rajput Tours &amp; Travels</span>
           </div>
           <div style={{ marginBottom: 4, display: 'flex', justifyContent: 'center', position: 'relative', height: 45 }}>
             {stampImg && <img src={stampImg} alt="Stamp" style={{ width: 140, objectFit: 'contain' }} />}
             {signatureImg && (
               <img src={signatureImg} alt="Signature" style={{
-                width: 65, objectFit: 'contain', position: 'absolute', right: 25, bottom: -8, opacity: 0.9, mixBlendMode: 'multiply'
+                width: 75, objectFit: 'contain', position: 'absolute', right: 25, bottom: -12, opacity: 0.9, mixBlendMode: 'multiply'
               }} />
             )}
+            {!stampImg && !signatureImg && (
+              <div style={{ color: 'transparent', height: 40 }}>Stamp Area</div>
+            )}
           </div>
-          <div style={{ fontSize: 11, marginTop: 15, fontWeight: 700 }}>Proprietor</div>
+          <div style={{ fontSize: 12, marginTop: 15, fontWeight: 700, fontFamily: 'Arial', paddingLeft: 20 }}>Proprietor</div>
         </div>
       </div>
     </div>
