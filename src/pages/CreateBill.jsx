@@ -227,7 +227,7 @@ export default function CreateBill() {
         <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16, padding: isMobile ? '16px 14px' : '24px 32px', minWidth: 0 }}>
 
           <SectionTitle>Header Information</SectionTitle>
-          <div className="responsive-grid-col2" style={{ marginBottom: 20 }}>
+          <div className="form-grid-2" style={{ marginBottom: 18 }}>
             <Field label="Bill No."><input style={inp} value={form.bill_no} onChange={e => set('bill_no', e.target.value)} /></Field>
             <Field label="Date"><input style={inp} value={form.date} onChange={e => set('date', e.target.value)} /></Field>
             <Field label="Party Name (M/s.)"><input style={inp} value={form.party_name} onChange={e => set('party_name', e.target.value)} /></Field>
@@ -255,7 +255,7 @@ export default function CreateBill() {
              <input type="checkbox" style={{ width: 18, height: 18, margin: 0, flexShrink: 0 }} checked={form.use_package} onChange={e => set('use_package', e.target.checked)} />
              Enable Minimum Fixed Package Rule
           </label>
-          <div className="responsive-grid-col3" style={{ marginBottom: 20, opacity: form.is_manual ? 0.4 : 1, pointerEvents: form.is_manual ? 'none' : 'auto', transition: 'all 0.3s' }}>
+          <div className="form-grid-3" style={{ marginBottom: 18, opacity: form.is_manual ? 0.4 : 1, pointerEvents: form.is_manual ? 'none' : 'auto', transition: 'all 0.3s' }}>
             <SmallField label="Total KMs">
               <input style={inp} type="number" value={form.total_km} onChange={e => set('total_km', e.target.value)} />
             </SmallField>
@@ -287,7 +287,7 @@ export default function CreateBill() {
           </div>
 
           <SectionTitle>Extras & Allowances</SectionTitle>
-          <div className="responsive-grid-col3" style={{ marginBottom: 20 }}>
+          <div className="form-grid-3" style={{ marginBottom: 18 }}>
             <SmallField label="Toll (₹)">
               <input style={inp} type="number" value={form.toll} onChange={e => set('toll', e.target.value)} />
             </SmallField>
