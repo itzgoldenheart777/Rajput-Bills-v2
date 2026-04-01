@@ -368,8 +368,8 @@ export default function CreateBill() {
 
         <div style={{ position: 'sticky', top: 24, zIndex: 10 }}>
           <div style={{ color: 'var(--text2)', fontSize: 12, fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 10 }}>Live Preview</div>
-          <div style={{ borderRadius: 12, border: '1px solid var(--border)', background: '#222', width: '100%', overflowX: 'hidden', padding: isMobile ? '16px 0' : 16, display: 'flex', justifyContent: isMobile ? 'center' : 'flex-start' }}>
-             <div style={{ transform: isMobile ? `scale(${(window.innerWidth - 32) / 620})` : 'none', transformOrigin: 'top left', width: isMobile ? 620 : 620, height: isMobile ? 877 * ((window.innerWidth - 32) / 620) : 'auto' }}>
+          <div className="custom-scrollbar" style={{ borderRadius: 12, border: '1px solid var(--border)', background: '#222', width: '100%', maxWidth: '100%', overflowX: 'auto', padding: 16 }}>
+             <div style={{ minWidth: 620 }}>
                <div ref={printRef} style={{ width: 620, margin: '0 auto', background: '#fff' }}>
                  <BillPreview data={{ ...form, ...calc, amount: calc.final_total }} />
                </div>
