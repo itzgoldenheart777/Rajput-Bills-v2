@@ -28,7 +28,6 @@ body {
   min-height: 100vh;
   font-size: 14px;
   line-height: 1.6;
-  /* Prevent horizontal overflow at root level */
   overflow-x: hidden;
 }
 
@@ -44,10 +43,9 @@ input:not([type="checkbox"]):not([type="radio"]), select, textarea {
   border-radius: 8px;
   outline: none;
   width: 100%;
-  transition: border 0.2s;
-  /* Prevent inputs from overflowing their parent */
-  min-width: 0;
+  min-width: 0;       /* CRITICAL: prevents inputs from overflowing grid cells */
   max-width: 100%;
+  transition: border 0.2s;
 }
 
 input:not([type="checkbox"]):not([type="radio"]):focus, select:focus, textarea:focus {
@@ -72,9 +70,9 @@ button {
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
-/* Horizontal scroll scrollbar (for tables / bill preview on mobile) */
+/* Horizontal scrollbar for bill preview / tables on mobile */
 .custom-scrollbar::-webkit-scrollbar { height: 4px; }
-.custom-scrollbar::-webkit-scrollbar-track { background: var(--bg); }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
 
 /* Print styles */
@@ -83,7 +81,7 @@ button {
   .no-print { display: none !important; }
 }
 
-/* Responsive Grid for main layout (form + preview) */
+/* ─── Main Layout: form + preview side-by-side on desktop ─── */
 .responsive-layout {
   display: grid;
   grid-template-columns: 1fr 400px;
@@ -91,32 +89,32 @@ button {
   align-items: start;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1100px) {
   .responsive-layout {
     grid-template-columns: 1fr;
     gap: 24px;
   }
 }
 
-/* 2-col form grid — collapses to single col on all phones */
+/* ─── 2-col grid: stays 2 cols on mobile, collapses only on very tiny screens ─── */
 .responsive-grid-col2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 12px;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 380px) {
   .responsive-grid-col2 {
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 10px;
   }
 }
 
-/* 3-col form grid */
+/* ─── 3-col grid: becomes 2-col on tablet/mobile ─── */
 .responsive-grid-col3 {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 16px;
+  gap: 12px;
 }
 
 @media (max-width: 900px) {
@@ -126,9 +124,9 @@ button {
   }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 380px) {
   .responsive-grid-col3 {
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 10px;
   }
 }
