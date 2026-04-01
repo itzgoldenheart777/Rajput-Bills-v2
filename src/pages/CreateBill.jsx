@@ -239,9 +239,7 @@ export default function CreateBill() {
               </Field>
             )}
             <Field label="Car Type">
-              <select style={inp} value={form.car_type} onChange={e => set('car_type', e.target.value)}>
-                {CAR_TYPES.map(c => <option key={c}>{c}</option>)}
-              </select>
+              <input style={inp} value={form.car_type} onChange={e => set('car_type', e.target.value)} placeholder="Sedan, SUV, Ertiga..." />
             </Field>
             <Field label="Car Number"><input style={inp} value={form.car_no} onChange={e => set('car_no', e.target.value)} /></Field>
           </div>
@@ -347,15 +345,15 @@ export default function CreateBill() {
             </button>
             <button
               onClick={async () => {
-                const canvas = await html2canvas(printRef.current, { scale: 3, useCORS: true })
+                const canvas = await html2canvas(printRef.current, { scale: 2, useCORS: true, backgroundColor: '#ffffff' })
                 const link = document.createElement('a')
-                link.download = `Bill_${form.bill_no || 'Draft'}.jpg`
-                link.href = canvas.toDataURL('image/jpeg', 0.95)
+                link.download = `Bill_${form.bill_no || 'Draft'}.png`
+                link.href = canvas.toDataURL('image/png', 1.0)
                 link.click()
               }}
               style={{ flex: 1, background: 'transparent', color: 'var(--text)', border: '1px dashed var(--accent)', borderRadius: 10, padding: '12px 28px', fontSize: 14, fontWeight: 500, cursor: 'pointer', minWidth: '150px' }}
             >
-              📸 Download JPG
+              📸 Download PNG
             </button>
           </div>
         </div>
