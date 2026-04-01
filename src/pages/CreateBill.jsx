@@ -224,7 +224,7 @@ export default function CreateBill() {
       </div>
 
       <div className="responsive-layout">
-        <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16, padding: isMobile ? '16px 14px' : '24px 32px', minWidth: 0 }}>
+        <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16, padding: isMobile ? '16px 14px' : '24px 32px', minWidth: 0, width: '100%', boxSizing: 'border-box' }}>
 
           <SectionTitle>Header Information</SectionTitle>
           <div className="form-grid-2" style={{ marginBottom: 18 }}>
@@ -366,11 +366,11 @@ export default function CreateBill() {
           </div>
         </div>
 
-        <div style={{ position: 'sticky', top: 24, zIndex: 10 }}>
+        <div style={{ position: 'sticky', top: 24, zIndex: 10, minWidth: 0, width: '100%' }}>
           <div style={{ color: 'var(--text2)', fontSize: 12, fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 10 }}>Live Preview</div>
-          <div className="custom-scrollbar" style={{ borderRadius: 12, border: '1px solid var(--border)', background: '#222', width: '100%', maxWidth: '100%', overflowX: 'auto', padding: 16 }}>
-             <div style={{ minWidth: 620 }}>
-               <div ref={printRef} style={{ width: 620, margin: '0 auto', background: '#fff' }}>
+          <div className="custom-scrollbar" style={{ borderRadius: 12, border: '1px solid var(--border)', background: '#222', width: '100%', overflowX: 'auto', padding: 16 }}>
+             <div style={{ width: 620, margin: '0 auto' }}>
+               <div ref={printRef} style={{ width: 620, background: '#fff' }}>
                  <BillPreview data={{ ...form, ...calc, amount: calc.final_total }} />
                </div>
              </div>
