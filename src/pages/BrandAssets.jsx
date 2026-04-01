@@ -226,12 +226,25 @@ export default function BrandAssets() {
   const [loading, setLoading] = useState(true)
   const [bucketError, setBucketError] = useState(null)
   
-  const [defaultCarNo, setDefaultCarNo] = useState(localStorage.getItem('defaultCarNo') || '')
+  const [savedCars, setSavedCars] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('savedCars')) || [] } catch { return [] }
+  })
+  const [newCarNo, setNewCarNo] = useState('')
+  const [newCarType, setNewCarType] = useState('')
 
-  const handleCarNoChange = (e) => {
-    const val = e.target.value
-    setDefaultCarNo(val)
-    localStorage.setItem('defaultCarNo', val)
+  const handleAddCar = () => {
+    if (!newCarNo || !newCarType) return
+    const updated = [...savedCars, { no: newCarNo.toUpperCase(), type: newCarType }]
+    setSavedCars(updated)
+    localStorage.setItem('savedCars', JSON.stringify(updated))
+    setNewCarNo('')
+    setNewCarType('')
+  }
+  
+  const handleDeleteCar = (i) => {
+    const updated = savedCars.filter((_, idx) => idx !== i)
+    setSavedCars(updated)
+    localStorage.setItem('savedCars', JSON.stringify(updated))
   }
 
   useEffect(() => {
@@ -298,7 +311,7 @@ export default function BrandAssets() {
         </div>
       </div>
 
-      {/* Global Details Panel */}
+      {/* Saved Cars Panel */}
       <div style={{
         background: 'var(--surface)',
         border: '1px solid var(--border)',
@@ -314,32 +327,48 @@ export default function BrandAssets() {
              fontSize: 22,
            }}>🚗</div>
            <div>
-             <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--text1)' }}>Default Car Details</div>
-             <div style={{ fontSize: 12, color: 'var(--text3)', marginTop: 2 }}>This will auto-fill on every new bill you generate.</div>
+             <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--text1)' }}>Saved Cars</div>
+             <div style={{ fontSize: 12, color: 'var(--text3)', marginTop: 2 }}>Add your fleet cars (e.g. Ertiga, Dzire) to quickly select them when billing.</div>
            </div>
         </div>
-        <div>
-          <label style={{ display: 'block', color: 'var(--text2)', fontSize: 12, fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 6 }}>
-            Target Car No.
-          </label>
+        
+        <div style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
           <input 
-            value={defaultCarNo} 
-            onChange={handleCarNoChange} 
-            placeholder="e.g. MH48CQ3165"
+            value={newCarNo} 
+            onChange={e => setNewCarNo(e.target.value)} 
+            placeholder="Car No. (MH04...)"
             style={{
-              background: 'var(--surface2)',
-              border: '1px solid var(--border)',
-              color: 'var(--text)',
-              fontFamily: 'var(--font-body)',
-              fontSize: 14,
-              padding: '10px 14px',
-              borderRadius: 8,
-              outline: 'none',
-              width: '100%',
-              maxWidth: 400
+              background: 'var(--surface2)', border: '1px solid var(--border)', color: 'var(--text)',
+              fontSize: 14, padding: '10px 14px', borderRadius: 8, outline: 'none', flex: 1
             }} 
           />
+          <input 
+            value={newCarType} 
+            onChange={e => setNewCarType(e.target.value)} 
+            placeholder="Type (Ertiga, Dzire...)"
+            style={{
+              background: 'var(--surface2)', border: '1px solid var(--border)', color: 'var(--text)',
+              fontSize: 14, padding: '10px 14px', borderRadius: 8, outline: 'none', flex: 1
+            }} 
+          />
+          <button 
+            onClick={handleAddCar}
+            style={{ background: 'var(--accent)', color: '#000', border: 'none', borderRadius: 8, padding: '0 20px', fontWeight: 700, cursor: 'pointer' }}
+          >
+            Add Car
+          </button>
         </div>
+
+        {savedCars.length > 0 && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {savedCars.map((c, i) => (
+              <div key={i} style={{ display: 'flex', justifyContent: 'space-between', background: 'var(--surface2)', padding: '10px 14px', borderRadius: 8, alignItems: 'center' }}>
+                <div><strong style={{ color: 'var(--accent2)' }}>{c.type}</strong> &nbsp;—&nbsp; {c.no}</div>
+                <button onClick={() => handleDeleteCar(i)} style={{ background: 'transparent', border: 'none', color: 'var(--red)', cursor: 'pointer', fontWeight: 700 }}>Remove</button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {loading ? (

@@ -54,7 +54,9 @@ export default function CreateBill() {
   const randNumStr = String(Math.floor(Math.random() * 1000)).padStart(3, '0')
   const defaultBillNo = `${String(today.getFullYear()).slice(-2)}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}${randNumStr}`
 
-  const defaultCarNo = localStorage.getItem('defaultCarNo') || ''
+  const [savedCars] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('savedCars')) || [] } catch { return [] }
+  })
 
   const [form, setForm] = useState({
     party_name: '',
@@ -74,7 +76,7 @@ export default function CreateBill() {
     is_manual: false,
     use_package: false,
     car_type: 'Sedan',
-    car_no: defaultCarNo,
+    car_no: '',
     bill_no: defaultBillNo,
     duty_slip: '',
     car_used_by: '',
@@ -224,6 +226,18 @@ export default function CreateBill() {
             <Field label="Date"><input style={inp} value={form.date} onChange={e => set('date', e.target.value)} /></Field>
             <Field label="Party Name (M/s.)"><input style={inp} value={form.party_name} onChange={e => set('party_name', e.target.value)} /></Field>
             <Field label="Route"><input style={inp} value={form.trip_route} onChange={e => set('trip_route', e.target.value)} /></Field>
+            {savedCars.length > 0 && (
+              <Field label="Fast-Fill from Saved Cars (Optional)">
+                <select style={{...inp, border: '1px solid var(--accent)'}} onChange={e => {
+                  if (!e.target.value) return
+                  const c = JSON.parse(e.target.value)
+                  setForm(f => ({ ...f, car_no: c.no, car_type: c.type || f.car_type }))
+                }} defaultValue="">
+                  <option value="" disabled>-- Select a Fleet Car --</option>
+                  {savedCars.map(c => <option key={c.no} value={JSON.stringify(c)}>{c.type} - {c.no}</option>)}
+                </select>
+              </Field>
+            )}
             <Field label="Car Type">
               <select style={inp} value={form.car_type} onChange={e => set('car_type', e.target.value)}>
                 {CAR_TYPES.map(c => <option key={c}>{c}</option>)}
