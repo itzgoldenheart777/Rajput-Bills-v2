@@ -31,7 +31,7 @@ export default function Layout({ children }) {
         </div>
 
         {/* Mobile Main */}
-        <main style={{ flex: 1, padding: '24px 16px', overflowX: 'hidden' }}>
+        <main style={{ flex: 1, padding: '20px 14px', overflowX: 'hidden', width: '100%', maxWidth: '100vw' }}>
           {children}
         </main>
 

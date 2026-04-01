@@ -224,7 +224,7 @@ export default function CreateBill() {
       </div>
 
       <div className="responsive-layout">
-        <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16, padding: isMobile ? '20px 16px' : '24px 32px' }}>
+        <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16, padding: isMobile ? '16px 14px' : '24px 32px', width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
 
           <SectionTitle>Header Information</SectionTitle>
           <div className="responsive-grid-col2" style={{ marginBottom: 20 }}>
@@ -331,7 +331,7 @@ export default function CreateBill() {
              </div>
           </div>
 
-          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: 10, flexDirection: isMobile ? 'column' : 'row', flexWrap: 'wrap' }}>
             <button
               onClick={handleSave}
               disabled={saving || saved}
