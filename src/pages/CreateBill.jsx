@@ -252,7 +252,7 @@ export default function CreateBill() {
 
           <SectionTitle>Calculation Logic (KM × Rate)</SectionTitle>
           <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', marginBottom: 16, fontSize: 13, background: 'var(--surface2)', padding: '10px 14px', borderRadius: 8 }}>
-             <input type="checkbox" checked={form.use_package} onChange={e => set('use_package', e.target.checked)} />
+             <input type="checkbox" style={{ width: 18, height: 18, margin: 0, flexShrink: 0 }} checked={form.use_package} onChange={e => set('use_package', e.target.checked)} />
              Enable Minimum Fixed Package Rule
           </label>
           <div className="responsive-grid-col3" style={{ marginBottom: 20, opacity: form.is_manual ? 0.4 : 1, pointerEvents: form.is_manual ? 'none' : 'auto', transition: 'all 0.3s' }}>
@@ -302,7 +302,7 @@ export default function CreateBill() {
           <SectionTitle>Manual Override</SectionTitle>
           <div style={{ background: 'var(--surface2)', padding: '16px', borderRadius: 8, marginBottom: 24, transition: 'all 0.3s' }}>
              <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', marginBottom: form.is_manual ? 10 : 0, fontSize: 13 }}>
-               <input type="checkbox" checked={form.is_manual} onChange={e => set('is_manual', e.target.checked)} />
+               <input type="checkbox" style={{ width: 18, height: 18, margin: 0, flexShrink: 0 }} checked={form.is_manual} onChange={e => set('is_manual', e.target.checked)} />
                <strong style={{ color: form.is_manual ? 'var(--red)' : 'var(--text2)' }}>Enable Manual Override (Locks auto KM calc)</strong>
              </label>
              {form.is_manual && (
